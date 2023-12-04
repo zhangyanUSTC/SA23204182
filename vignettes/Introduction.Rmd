@@ -1,0 +1,296 @@
+---
+title: "Introduction to SA23204182"
+author: "zhang Yan"
+date: "2023-12-03"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to SA23204182}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## <font color="red">目录</font>
+
+您可以点击以下章节名称, 将自动跳转到相应位置
+
++ [0.Overview](#section-0)
++ [1.使用 _norm_clus_ 函数对二元混合正态数据进行分类(R语言)](#section-1)
+  + [a.使用示例](#section-1a)
+  + [b.源代码](#section-1b)
+  + [c.算法原理](#section-1c)
++ [2.使用 _norm_clusC_ 函数对二元混合正态数据进行分类(C语言)](#section-2)
+  + [a.使用示例](#section-2a)
+  + [b.源代码](#section-2b)
++ [3.使用microbenchmark比较函数 _norm_clus_ 与函数 _norm_clusC_ ](#section-3)
+  + [a.示例](#section-3a)
+
+## 0.Overview {#section-0}
+
+__SA23204182__ 用于实现一些简单的算法:
+
+(1) 通过EM算法对混合正态分布进行分类，并估计分布参数。
+(2) ....
+
+
+## 1. 使用 _norm_clus_ 函数对二元混合正态数据进行分类(R语言) {#section-1}
+
+<font color=#03A3DA> _norm_clus_ </font> 函数是由R写成， 用于分类二元混合正态数据, 您可以在本章1a.中了解如何使用这个函数; 函数具体代码实现可以在本章的1b.节中找到; 算法依据为EM算法, 具体理论原理可以查阅本章的1c.节.
+
+### 1a.使用示例  {#section-1a}
+
+为了使用 <font color=#03A3DA> _norm_clus_ </font> 函数,您可以运行以下示例代码: 
+
+<font color="gray">#本段代码使用norm_clus函数,应用在数据集`data_mix2`(size=100),并将其中数据分为两类, 限制EM过程最大迭代次数为10.</font>
+```{r,eval=TRUE}
+library(SA23204182)
+data(data_mix2)
+clu<-norm_clus(data=data_mix2 ,K=10)
+```
+以上自动输出的结果表明函数<font color=#03A3DA> _norm_clus_ </font>成功运行, 并且在运行过程中EM过程被迭代使用了2次。 <font color="gray" size=1>#实际上可以通过使用`norm_clus(data_mix2,10,iters=FALSE)`来禁止输出迭代次数.</font>
+
+这里展示一下<font color=#03A3DA> _norm_clus_ </font>函数返回值的结构:
+
+```{r}
+str(clu)
+clu$label
+```
+
+
+函数<font color=#03A3DA> _norm_clus_ </font>输出结果`clu`是一个列表.
+
+其中`clu$label`展示数据集`data_mix2`的分类结果, 使用0或1区分类别;  `clu$param`展示这两类的混合比例以及拟合正态分布的参数. 
+
+在这个例子中, 由于生成数据集 `data_mix2` 时,前60个数据和后40个数据来自于不同正态分布,所以根据以上输出结果,函数<font color=#03A3DA> _norm_clus_ </font>很完美地将这个数据集划分为真实分类! 算法估计这两类数据分别服从 N(-0.0576,0.9258) 与 N(8.3222 ,4.0097) 分布，实际上，这两类数据分别从N(0,1)与N(8,4)生成, 和估计值非常接近!!
+
+<div style="border: 1px solid #ccc; padding: 10px;background-color: #CAE1FF; color: #6D0A0A;border-radius: 10px;">
+**Note：**
+需要注意的是，这里算法仅仅实现了将数据进行二分类. 实际上，想要将数据划分为3类及以上并不困难，算法也并不需要做复杂改进。或者可以简单地通过迭代使用此算法来完成多分类.
+</div>
+
+### 1b.源代码 {#section-1b}
+
+实现该算法的R代码如下：
+
+```{r,eval=FALSE}
+norm_clus<-function(data,K =10){
+  N<-length(data)
+  data_bar<-mean(data);data_sd<-sd(data)
+  param<-c(0.5,data_bar,data_bar+data_sd^2/2,data_sd^2,data_sd^2)
+  label<-numeric(N)#label
+  for (k in 1:K) {
+    for (i in 1:N) {#E
+      p1<-param[1]*dnorm(data[i],param[2],sqrt(param[4]))
+      p0<-(1-param[1])*dnorm(data[i],param[3],sqrt(param[5]))
+      label[i]<-p1/(p1+p0)
+    }
+    label<-round(label)
+    if(k>1 && all(z==label)) {print(c("EM iterations:" ));break}
+    z<-label
+    param[1]<-sum(label)/N#label=1
+    
+    param[2]<-crossprod(label,data)/sum(label)
+    param[3]<-(sum(data)-crossprod(label,data))/(N-sum(label))
+    
+    param[4]<-(sum(label*(data-param[2])^2))/sum(label)
+    param[5]<-(sum((1-label)*(data-param[3])^2))/(N-sum(label))
+    
+  }
+  z<-round(label)
+  return(list(label=z,param=param))
+}
+```
+
+### 1c.算法原理 {#section-1c}
+
+E-M算法是由Dempster等人提出的一种通过数据扩张求参数的极大似然估计的算法\cite{ref1}。
+
+
+该算法通过迭代完成，每次迭代分为两步：第一步是求对数似然函数的条件期望（E步），第二步是最大化第一步求得的条件期望（M步）。算法通过数据扩张的方法，将难以求解的极大似然估计问题转化为一系列较为简单的函数最优化问题。
+
+首先记观测样本为y，参数为$\theta$。假设样本有密度$f(y|\theta)$，参数$\theta$先验分布为$\pi(\theta)$，由此得到的后验分布记为$\pi(\theta|y)$。直接求解$\theta$的后验众数可能是非常困难的。
+
+于是引入隐变量z,由于$\pi(\theta|y)=\pi(\theta,z|y)/p(z|y,\theta)$，故
+$$ln\pi(\theta|y)=ln\pi(\theta,z|y)-lnp(z|y,\theta)$$
+两边同时对$z|y,\theta^{(n)}$求期望，则有
+$$\begin{aligned}ln\pi(\theta |y)&=\int ln\pi(\theta ,z|y)p(z|y,\theta ^{(n)})dz-\int lnp(z|y,\theta)p(z|y,\theta ^{(n)})dz\\
+&=Q(\theta,\theta^{(n)})-H(\theta,\theta^{(n)})
+\end{aligned}$$
+
+E-M算法的策略如下：
+
+(1)初始化参数$\theta$,记为$\theta^{(0)}$。
+
+(2)对n=0,1,...,M-1(M为迭代次数)，重复以下两步:
+
+\quad E步：计算$Q(\theta,\theta^{(n)})$；
+
+\quad Q步：对$\theta$最大化$Q(\theta,\theta^{(n)})$,以获得$\theta^{(n+1)}$。
+
+(3)最终获得的$\theta^{(M)}$即为对参数$\theta$的估计结果。
+
+容易证明，从任何初值出发，E-M算法一般都能到达一个局部极大值。
+
+另外，根据贝叶斯公式，有：
+$$\pi(\theta,z|y)=\frac{f(z,y|\theta)\pi(\theta)}{m(y)}$$
+由于m(y)为常数，故最大化$Q(\theta,\theta^{(n)})=E^{z|y,\theta^{(n)}}[ln\pi(\theta ,z|y)]$相当于最大化$Q^{*}(\theta,\theta^{(n)})=E^{z|y,\theta^{(n)}}[ln (f(z,y|\theta)\pi(\theta))]$
+
+在这个混合正态分布参数估计问题中，除了直接观测到的数据$data$，我们继续引入隐变量$z$
+$$z_{i,j}=\begin{cases}
+    1  \quad  \text{第i个数据属于第j类}\\
+    0  \quad  \text{第i个数据不属于第j类}
+\end{cases}$$
+满足$$p(z_{i,0}=1)=\varepsilon, \quad p(z_{i,0}=0)=1-\varepsilon.$$
+
+设x=(y,z)，则x的对数似然函数为：
+$$lnf(x|\theta)=\sum_{i=1}^{n}(\sum_{j=1}^{2}z_{i,j}(ln\varepsilon +\frac{|y_{i }-\mu _{j }|^{2}}{z\sigma _{j }^{2}} -\frac{1}{2}ln\sigma _{j }^{2} ) )$$
+
+
+应用E-M算法：
+
+E步：
+$$\begin{aligned}
+    Q^{*}(\theta,\theta^{(n)})&=E^{z|y,\theta^{(n)}}[ln (f(z,y|\theta)\pi(\theta))]\\
+    &=\sum_{i=1}^{n}(\sum_{j=1}^{2}E[z_{i,j}|y,\theta^{(n)}](ln\varepsilon _{j}+\frac{|y_{i }-\mu _{j }|^{2}}{z\sigma _{j }^{2}} -\frac{1}{2}ln\sigma _{j }^{2} ) )
+\end{aligned}$$
+
+
+其中$\tilde{z}_{i,j}\widehat{=}E[z_{i,j}|y,\theta^{(n)}]=\frac{\varepsilon_{j}f(y_{i}|\theta)}{\sum_{j=1}^{2}\varepsilon_{j}f(y_{i}|\theta)}$。
+
+M步：最大化$ Q^{*}(\theta,\theta^{(n)})$,即求解以下方程组：
+$$
+\begin{cases}
+\frac{\partial Q^{*}(\theta,\theta^{(n)})}{\partial \varepsilon _{j}}=0 \\
+\frac{\partial Q^{*}(\theta,\theta^{(n)})}{\partial \mu _{j }}=0\\
+\frac{\partial Q^{*}(\theta,\theta^{(n)})}{\partial \sigma^{2} _{j }}=0\\
+\end{cases}.$$
+
+整理化简得：
+
+$$
+\begin{cases}
+\varepsilon_{j}^{(n+1)}=\sum^{n}_{i=1}\tilde{z}_{i,j}/n \\
+\mu_{j }^{(n+1)}=\frac{\sum^{n}_{i=1}\tilde{z}_{i,j}y_{i }}{\sum^{n}_{i=1}\tilde{z}_{i,j}}\\
+\sigma^{2(n+1)}_{j }=\frac{\sum^{n}_{i=1}\tilde{z}_{i,j}(y_{i }-\mu_{j }^{(n+1)})^{2}}{n\sum^{n}_{i=1}\tilde{z}_{i,j}}\\
+\end{cases}$$
+
+迭代运行以上的E步与M步，直至达到设定的迭代次数，便能得到参数$\theta$的估计值$\theta^{(M)}$。
+
+进一步地，继续计算$\tilde{z}_{i,j}=E[z_{i,j}|y,\theta^{(M)}]$。由于$E[z_{i,j}|y,\theta^{(M)}]=p(z_{i,j}=1|y,\theta^{(M)})$，即在已知数据y与参数$\theta^{(M)}$下第i个数据属于第j类的概率。那么我们就可以取$C_{i}=argmax\{ \tilde{z}_{i,j}:j=1,2\}$作为对第i个数据的类别估计。
+
+## 2. 使用 _norm_clusC_ 函数对二元混合正态数据进行分类(C语言){#section-2}
+
+<font color=#03A3DA> _norm_clusC_ </font> 函数是由C写成， 用于分类二元混合正态数据, 您可以在本章2a.中了解如何使用这个函数; 函数具体代码实现可以在本章的2b.节中找到; 算法依据为EM算法, 具体理论原理可以查阅上一章的1c.节.
+
+### 2a.使用示例  {#section-2a}
+
+由于函数 _norm_clus_ 与 _norm_clusC_ 在实现过程中采用了完全一样的算法过程, 区别仅仅在于实现语言的不同, 所以本节的实验结果与1a.节类同.
+
+为了使用 <font color=#03A3DA> _norm_clusC_ </font> 函数,您可以运行以下示例代码: 
+
+<font color="gray">#本段代码使用norm_clusC函数,应用在数据集`data_mix2`(size=100),并将其中数据分为两类, 限制EM过程最大迭代次数为10.</font>
+```{r,eval=TRUE}
+# library(SA23204182)
+data(data_mix2)
+cluC<-norm_clusC(data=data_mix2 ,K=10)
+```
+以上自动输出的结果表明函数<font color=#03A3DA> _norm_clusC_ </font>成功运行, 并且在运行过程中EM过程被迭代使用了2次。<font color="gray" size=1>#实际上可以通过使用`norm_clus(data_mix2,10,iters=FALSE)`来禁止输出迭代次数.</font>
+
+这里展示一下<font color=#03A3DA> _norm_clusC_ </font>函数返回值的结构:
+
+```{r}
+str(cluC)
+cluC$label
+```
+
+
+函数<font color=#03A3DA> _norm_clusC_ </font>输出结果`cluC`是一个列表.
+
+其中`cluC$label`展示数据集`data_mix2`的分类结果, 使用0或1区分类别;  `cluC$param`展示这两类的混合比例以及拟合正态分布的参数. 
+
+在这个例子中, 我们可以看到函数<font color=#03A3DA> _norm_clusC_ </font>同样很完美地将这个数据集划分为真实分类! 
+
+
+### 2b.源代码 {#section-2b}
+
+实现该算法的代码如下：
+
+```{r,eval=FALSE}
+List norm_clusC(NumericVector data,int K) {
+  int N=data.size();
+  double data_mean=mean(data);
+  double data_sd=sd(data);
+  NumericVector label(N);
+  NumericVector param(5);
+  param[0] = 0.5;
+  param[1] = data_mean;
+  param[2] = data_mean + data_sd;
+  param[3] = pow(data_sd, 2);
+  param[4] = pow(data_sd, 2);
+  NumericVector z(N);
+  for (int iter = 0; iter < K; iter++) {
+    double p1, p0;
+    for (int i = 0; i < N; i++) {
+      p1 = param[0]*exp(-0.5 * pow((data[i] - param[1]), 2)/param[3])/ sqrt(param[3]);
+      p0 = (1-param[0])*exp(-0.5 * pow((data[i] - param[2]), 2)/ param[4]) / sqrt(param[4]);
+      label[i]=p1/(p1+p0);
+    }
+    for (int i = 0; i < N; i++){
+      label[i]=round(label[i]);
+    }
+    if (iter >0 && is_true(all(z==label))){
+      Rcout << "EM iterations:" << iter << std::endl; 
+      break;
+    }
+    for (int i = 0; i < N; i++){
+      z[i]=label[i];
+    }
+    param[0]=mean(label);
+    double s1=0,s2=0,s3=0,s4=0;
+    
+    for (int i = 0; i < N; i++) {
+      s1 += label[i] * data[i]/N/param[0];
+      s2 += (1-label[i]) * data[i]/N/(1-param[0]);
+      s3 += label[i] * pow(data[i],2);
+      s4 += (1-label[i]) * pow(data[i],2);
+    }
+    param[1] = s1;
+    param[2] = s2;
+    param[3] = s3/N/(param[0])- pow(s1,2);
+    param[4] = s4/N/(1-param[0])- pow(s2,2);
+  }
+  List result = List::create(
+    Named("label") = label,
+    Named("param") = param);
+  return result;
+}
+```
+
+## 3.使用microbenchmark比较函数 _norm_clus_ 与函数 _norm_clusC_ {#section-3}
+
+### 3a.示例 {#section-3a}
+
+可以运行以下示例代码来比较函数 <font color=#03A3DA> _norm_clus_ </font> 与函数 <font color=#03A3DA> _norm_clusC_</font> 的运行时间.
+
+在这里,函参我们传入了`iters=FALSE`, 这一项是为了为了避免函数 _norm_clus 与函数 _norm_clusC_在运行过程中自动输出"EM iterations:" "2"等字样, 简化代码输出. <font color="gray">#否则在使用microbenchmark时,"EM iterations:" "2"会被反复输出</font>
+
+```{r,eval=T}
+# library(SA23204182)
+data(data_mix2)
+tm1 <- microbenchmark::microbenchmark(
+rnR = norm_clus(data_mix2,10,iters=FALSE),
+rnC = norm_clusC(data_mix2,10,iters=FALSE))
+print(summary(tm1)[,c(1,3,5,6)])
+```
+ 
+可以看出使用C实现的函数<font color=#03A3DA> _norm_clusC_</font>比使用R实现的函数<font color=#03A3DA> _norm_clus_</font>快非常多。
+
+
+
+
+
+
+
+
+
+
+
