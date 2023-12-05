@@ -28,7 +28,7 @@ NULL
 #' \dontrun{
 #' data(data_mix2)
 #' clu<- norm_clus(data_mix2,2)
-#' sum(clu$label)
+#' clu
 #' }
 #' @import boot
 #' @import MASS
@@ -82,4 +82,65 @@ norm_clus<-function(data,K=10,iters=T){
 #' }
 #' @import microbenchmark
 NULL
+
+
+#' Spectral Clustering Function
+#'
+#' This function performs spectral clustering on a given adjacency matrix,
+#' dividing it into the specified number of communities.
+#'
+#' @param adjacencyMatrix Adjacency matrix representing the connectivity of the graph.
+#' @param numClusters Number of communities to segment the graph into.
+#' @return An integer vector indicating the community assignment for each node.
+#' @import igraph
+#' @importFrom stats kmeans
+#' @examples
+#' \dontrun{
+#' data(adjacency_matrix)
+#' numClusters <- 2
+#' result <- spectralClustering(adjacencyMatrix, numClusters)
+#' cat("Community Assignments:", result, "\n")
+#'}
+#' @export
+spectralClustering <- function(adjacencyMatrix, numClusters) {
+  graph <- graph_from_adjacency_matrix(adjacencyMatrix, mode = "undirected", weighted = NULL)
+  
+  # Get the Laplacian matrix
+  laplacianMatrix <- graph.laplacian(graph, normalized = TRUE)
+  
+  # Compute the eigenvalues and eigenvectors of the Laplacian matrix
+  laplacianEigen <- eigen(laplacianMatrix)
+  
+  # Select the first numClusters eigenvectors
+  selectedEigenVectors <- laplacianEigen$vectors[, 1:numClusters]
+  
+  # Perform spectral clustering
+  spectralClusters <- kmeans(selectedEigenVectors, centers = numClusters)$cluster
+  
+  return(spectralClusters)
+}
+
+#' Adjacency Matrix for Spectral Clustering
+#'
+#' This RData file contains an adjacency matrix that is intended to be used as input
+#' for spectral clustering using the spectralClustering function. Spectral clustering
+#' is a graph-based clustering technique often applied to such adjacency matrices.
+#'
+#' The adjacency matrix represents the connectivity of a graph, where each row and
+#' column corresponds to a node, and the matrix entries indicate the edges between
+#' nodes (1 for connected, 0 for not connected).
+#' 
+#' @title adjacencyMatrix data set
+#' @name adjacencyMatrix
+#' @description This RData file contains an adjacency matrix that is intended to be used as input for spectral clustering using the spectralClustering function.
+#' @examples
+#' \dontrun{
+#' data(adjacency_matrix)
+#' numClusters <- 2
+#' result <- spectralClustering(adjacencyMatrix, numClusters)
+#' cat("Community Assignments:", result, "\n")
+#'}
+NULL
+
+
 

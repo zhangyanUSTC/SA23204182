@@ -27,6 +27,6 @@ The EM algorithm is used to classify data from binary or ternary positive mixing
 \dontrun{
 data(data_mix2)
 clu<- norm_clus(data_mix2,2)
-sum(clu$label)
+clu
 }
 }

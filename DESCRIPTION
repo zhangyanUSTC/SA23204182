@@ -5,11 +5,11 @@ Version: 1.0
 Date: 2023-12-02
 Author: Zhang Yan
 Maintainer: Zhang Yan <zy19050972@mail.ustc.edu.cn>
-Description: This is a simple R package that provides tools for data analysis.
+Description: This is a simple R package that provides tools for data clustering.
 License: GPL (>= 2)
 RoxygenNote: 7.2.3
 Encoding: UTF-8
-Imports: Rcpp,microbenchmark,DAAG, MASS, boot, bootstrap, coda
+Imports: Rcpp,microbenchmark,DAAG, MASS, boot, bootstrap, coda,igraph
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 LinkingTo: Rcpp
