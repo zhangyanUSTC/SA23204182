@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="zhang Yan" />
+
+<meta name="date" content="2023-12-03" />
+
+<title>Introduction to SA23204182</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to SA23204182</h1>
+<h4 class="author">zhang Yan</h4>
+<h4 class="date">2023-12-03</h4>
+
+
+
+<div id="目录" class="section level2">
+<h2><font color="red">目录</font></h2>
+<p>您可以点击以下章节名称, 将自动跳转到相应位置</p>
+<ul>
+<li><a href="#section-0">0.Overview</a></li>
+<li><a href="#section-1">1.使用 <em>norm_clus</em>
+函数对二元混合正态数据进行分类(R语言)</a>
+<ul>
+<li><a href="#section-1a">a.使用示例</a></li>
+<li><a href="#section-1b">b.源代码</a></li>
+<li><a href="#section-1c">c.算法原理</a></li>
+</ul></li>
+<li><a href="#section-2">2.使用 <em>norm_clusC</em>
+函数对二元混合正态数据进行分类(C语言)</a>
+<ul>
+<li><a href="#section-2a">a.使用示例</a></li>
+<li><a href="#section-2b">b.源代码</a></li>
+</ul></li>
+<li><a href="#section-3">3.使用microbenchmark比较函数 <em>norm_clus</em>
+与函数 <em>norm_clusC</em></a>
+<ul>
+<li><a href="#section-3a">a.示例</a></li>
+</ul></li>
+<li><a href="#section-4">4.使用 <em>spectralClustering</em>
+函数进行社区发现(节点聚类)</a>
+<ul>
+<li><a href="#section-4a">a.使用示例</a></li>
+<li><a href="#section-4b">b.源代码</a></li>
+<li><a href="#section-4c">c.算法原理</a></li>
+</ul></li>
+</ul>
+</div>
+<div id="section-0" class="section level2">
+<h2>0.Overview</h2>
+<p><strong>SA23204182</strong> 用于实现一些简单的聚类算法:</p>
+<ol style="list-style-type: decimal">
+<li>通过EM算法对混合正态分布进行分类，并估计分布参数。</li>
+<li>通过谱聚类算法处理邻接矩阵,输出节点的社区(聚类)划分.</li>
+<li>…</li>
+</ol>
+<p>包中提供了一些简单的示例数据<code>data_mix2</code>与<code>adjacency_matrix</code>用于使用这些函数.</p>
+</div>
+<div id="section-1" class="section level2">
+<h2>1. 使用 <em>norm_clus</em>
+函数对二元混合正态数据进行分类(R语言)</h2>
+<p><font color="#03A3DA"> <em>norm_clus</em> </font> 函数是由R写成，
+用于分类二元混合正态数据, 您可以在本章1a.中了解如何使用这个函数;
+函数具体代码实现可以在本章的1b.节中找到; 算法依据为EM算法,
+具体理论原理可以查阅本章的1c.节.</p>
+<div id="section-1a" class="section level3">
+<h3>1a.使用示例</h3>
+<p>为了使用 <font color="#03A3DA"> <em>norm_clus</em> </font>
+函数,您可以运行以下示例代码:</p>
+<p><font color="gray">#本段代码使用norm_clus函数,应用在数据集<code>data_mix2</code>(size=100),并将其中数据分为两类,
+限制EM过程最大迭代次数为10.</font></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(SA23204182)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">data</span>(data_mix2)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>clu<span class="ot">&lt;-</span><span class="fu">norm_clus</span>(<span class="at">data=</span>data_mix2 ,<span class="at">K=</span><span class="dv">10</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;EM iterations:&quot; &quot;2&quot;</code></pre>
+<p>以上自动输出的结果表明函数<font color="#03A3DA"> <em>norm_clus</em>
+</font>成功运行, 并且在运行过程中EM过程被迭代使用了2次。
+<font color="gray" size="1">#实际上可以通过使用<code>norm_clus(data_mix2,10,iters=FALSE)</code>来禁止输出迭代次数.</font></p>
+<p>这里展示一下<font color="#03A3DA"> <em>norm_clus</em>
+</font>函数返回值的结构:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">str</span>(clu)</span></code></pre></div>
+<pre><code>## List of 2
+##  $ label: num [1:100] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ param: num [1:5] 0.6 -0.0576 8.3222 0.9258 4.0097</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>clu<span class="sc">$</span>label</span></code></pre></div>
+<pre><code>##   [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+##  [38] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+##  [75] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</code></pre>
+<p>函数<font color="#03A3DA"> <em>norm_clus</em>
+</font>输出结果<code>clu</code>是一个列表.</p>
+<p>其中<code>clu$label</code>展示数据集<code>data_mix2</code>的分类结果,
+使用0或1区分类别;
+<code>clu$param</code>展示这两类的混合比例以及拟合正态分布的参数.</p>
+<p>在这个例子中, 由于生成数据集 <code>data_mix2</code>
+时,前60个数据和后40个数据来自于不同正态分布,所以根据以上输出结果,函数<font color="#03A3DA">
+<em>norm_clus</em> </font>很完美地将这个数据集划分为真实分类!
+算法估计这两类数据分别服从 N(-0.0576,0.9258) 与 N(8.3222 ,4.0097)
+分布，实际上，这两类数据分别从N(0,1)与N(8,4)生成, 和估计值非常接近!!</p>
+<div style="border: 1px solid #ccc; padding: 10px;background-color: #CAE1FF; color: #6D0A0A;border-radius: 10px;">
+<p><strong>Note：</strong>
+需要注意的是，这里算法仅仅实现了将数据进行二分类.
+实际上，想要将数据划分为3类及以上并不困难，算法也并不需要做复杂改进。或者可以简单地通过迭代使用此算法来完成多分类.</p>
+</div>
+</div>
+<div id="section-1b" class="section level3">
+<h3>1b.源代码</h3>
+<p>实现该算法的R代码如下：</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>norm_clus<span class="ot">&lt;-</span><span class="cf">function</span>(data,<span class="at">K =</span><span class="dv">10</span>){</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  N<span class="ot">&lt;-</span><span class="fu">length</span>(data)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  data_bar<span class="ot">&lt;-</span><span class="fu">mean</span>(data);data_sd<span class="ot">&lt;-</span><span class="fu">sd</span>(data)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  param<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="fl">0.5</span>,data_bar,data_bar<span class="sc">+</span>data_sd<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="dv">2</span>,data_sd<span class="sc">^</span><span class="dv">2</span>,data_sd<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  label<span class="ot">&lt;-</span><span class="fu">numeric</span>(N)<span class="co">#label</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>K) {</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {<span class="co">#E</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>      p1<span class="ot">&lt;-</span>param[<span class="dv">1</span>]<span class="sc">*</span><span class="fu">dnorm</span>(data[i],param[<span class="dv">2</span>],<span class="fu">sqrt</span>(param[<span class="dv">4</span>]))</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>      p0<span class="ot">&lt;-</span>(<span class="dv">1</span><span class="sc">-</span>param[<span class="dv">1</span>])<span class="sc">*</span><span class="fu">dnorm</span>(data[i],param[<span class="dv">3</span>],<span class="fu">sqrt</span>(param[<span class="dv">5</span>]))</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>      label[i]<span class="ot">&lt;-</span>p1<span class="sc">/</span>(p1<span class="sc">+</span>p0)</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>    }</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>    label<span class="ot">&lt;-</span><span class="fu">round</span>(label)</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>    <span class="cf">if</span>(k<span class="sc">&gt;</span><span class="dv">1</span> <span class="sc">&amp;&amp;</span> <span class="fu">all</span>(z<span class="sc">==</span>label)) {<span class="fu">print</span>(<span class="fu">c</span>(<span class="st">&quot;EM iterations:&quot;</span> ));<span class="cf">break</span>}</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>    z<span class="ot">&lt;-</span>label</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>    param[<span class="dv">1</span>]<span class="ot">&lt;-</span><span class="fu">sum</span>(label)<span class="sc">/</span>N<span class="co">#label=1</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>    </span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>    param[<span class="dv">2</span>]<span class="ot">&lt;-</span><span class="fu">crossprod</span>(label,data)<span class="sc">/</span><span class="fu">sum</span>(label)</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>    param[<span class="dv">3</span>]<span class="ot">&lt;-</span>(<span class="fu">sum</span>(data)<span class="sc">-</span><span class="fu">crossprod</span>(label,data))<span class="sc">/</span>(N<span class="sc">-</span><span class="fu">sum</span>(label))</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>    </span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>    param[<span class="dv">4</span>]<span class="ot">&lt;-</span>(<span class="fu">sum</span>(label<span class="sc">*</span>(data<span class="sc">-</span>param[<span class="dv">2</span>])<span class="sc">^</span><span class="dv">2</span>))<span class="sc">/</span><span class="fu">sum</span>(label)</span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>    param[<span class="dv">5</span>]<span class="ot">&lt;-</span>(<span class="fu">sum</span>((<span class="dv">1</span><span class="sc">-</span>label)<span class="sc">*</span>(data<span class="sc">-</span>param[<span class="dv">3</span>])<span class="sc">^</span><span class="dv">2</span>))<span class="sc">/</span>(N<span class="sc">-</span><span class="fu">sum</span>(label))</span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>    </span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>  }</span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>  z<span class="ot">&lt;-</span><span class="fu">round</span>(label)</span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">label=</span>z,<span class="at">param=</span>param))</span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="section-1c" class="section level3">
+<h3>1c.算法原理</h3>
+<p>E-M算法是由Dempster等人提出的一种通过数据扩张求参数的极大似然估计的算法。</p>
+<p>该算法通过迭代完成，每次迭代分为两步：第一步是求对数似然函数的条件期望（E步），第二步是最大化第一步求得的条件期望（M步）。算法通过数据扩张的方法，将难以求解的极大似然估计问题转化为一系列较为简单的函数最优化问题。</p>
+<p>首先记观测样本为y，参数为<span class="math inline">\(\theta\)</span>。假设样本有密度<span class="math inline">\(f(y|\theta)\)</span>，参数<span class="math inline">\(\theta\)</span>先验分布为<span class="math inline">\(\pi(\theta)\)</span>，由此得到的后验分布记为<span class="math inline">\(\pi(\theta|y)\)</span>。直接求解<span class="math inline">\(\theta\)</span>的后验众数可能是非常困难的。</p>
+<p>于是引入隐变量z,由于<span class="math inline">\(\pi(\theta|y)=\pi(\theta,z|y)/p(z|y,\theta)\)</span>，故
+<span class="math display">\[ln\pi(\theta|y)=ln\pi(\theta,z|y)-lnp(z|y,\theta)\]</span>
+两边同时对<span class="math inline">\(z|y,\theta^{(n)}\)</span>求期望，则有 <span class="math display">\[\begin{aligned}ln\pi(\theta |y)&amp;=\int
+ln\pi(\theta ,z|y)p(z|y,\theta ^{(n)})dz-\int
+lnp(z|y,\theta)p(z|y,\theta ^{(n)})dz\\
+&amp;=Q(\theta,\theta^{(n)})-H(\theta,\theta^{(n)})
+\end{aligned}\]</span></p>
+<p>E-M算法的策略如下：</p>
+<p>(1)初始化参数<span class="math inline">\(\theta\)</span>,记为<span class="math inline">\(\theta^{(0)}\)</span>。</p>
+<p>(2)对n=0,1,…,M-1(M为迭代次数)，重复以下两步:</p>
+<p>E步：计算<span class="math inline">\(Q(\theta,\theta^{(n)})\)</span>；</p>
+<p>Q步：对<span class="math inline">\(\theta\)</span>最大化<span class="math inline">\(Q(\theta,\theta^{(n)})\)</span>,以获得<span class="math inline">\(\theta^{(n+1)}\)</span>。</p>
+<p>(3)最终获得的<span class="math inline">\(\theta^{(M)}\)</span>即为对参数<span class="math inline">\(\theta\)</span>的估计结果。</p>
+<p>容易证明，从任何初值出发，E-M算法一般都能到达一个局部极大值。</p>
+<p>另外，根据贝叶斯公式，有： <span class="math display">\[\pi(\theta,z|y)=\frac{f(z,y|\theta)\pi(\theta)}{m(y)}\]</span>
+由于m(y)为常数，故最大化<span class="math inline">\(Q(\theta,\theta^{(n)})=E^{z|y,\theta^{(n)}}[ln\pi(\theta
+,z|y)]\)</span>相当于最大化<span class="math inline">\(Q^{*}(\theta,\theta^{(n)})=E^{z|y,\theta^{(n)}}[ln
+(f(z,y|\theta)\pi(\theta))]\)</span></p>
+<p>在这个混合正态分布参数估计问题中，除了直接观测到的数据<span class="math inline">\(data\)</span>，我们继续引入隐变量<span class="math inline">\(z\)</span> <span class="math display">\[z_{i,j}=\begin{cases}
+    1  \quad  \text{第i个数据属于第j类}\\
+    0  \quad  \text{第i个数据不属于第j类}
+\end{cases}\]</span> 满足<span class="math display">\[p(z_{i,0}=1)=\varepsilon, \quad
+p(z_{i,0}=0)=1-\varepsilon.\]</span></p>
+<p>设x=(y,z)，则x的对数似然函数为： <span class="math display">\[lnf(x|\theta)=\sum_{i=1}^{n}(\sum_{j=1}^{2}z_{i,j}(ln\varepsilon
++\frac{|y_{i }-\mu _{j }|^{2}}{z\sigma _{j }^{2}} -\frac{1}{2}ln\sigma
+_{j }^{2} ) )\]</span></p>
+<p>应用E-M算法：</p>
+<p>E步： <span class="math display">\[\begin{aligned}
+    Q^{*}(\theta,\theta^{(n)})&amp;=E^{z|y,\theta^{(n)}}[ln
+(f(z,y|\theta)\pi(\theta))]\\
+    &amp;=\sum_{i=1}^{n}(\sum_{j=1}^{2}E[z_{i,j}|y,\theta^{(n)}](ln\varepsilon
+_{j}+\frac{|y_{i }-\mu _{j }|^{2}}{z\sigma _{j }^{2}}
+-\frac{1}{2}ln\sigma _{j }^{2} ) )
+\end{aligned}\]</span></p>
+<p>其中<span class="math inline">\(\tilde{z}_{i,j}\widehat{=}E[z_{i,j}|y,\theta^{(n)}]=\frac{\varepsilon_{j}f(y_{i}|\theta)}{\sum_{j=1}^{2}\varepsilon_{j}f(y_{i}|\theta)}\)</span>。</p>
+<p>M步：最大化$ Q^{*}(,^{(n)})$,即求解以下方程组： <span class="math display">\[
+\begin{cases}
+\frac{\partial Q^{*}(\theta,\theta^{(n)})}{\partial \varepsilon _{j}}=0
+\\
+\frac{\partial Q^{*}(\theta,\theta^{(n)})}{\partial \mu _{j }}=0\\
+\frac{\partial Q^{*}(\theta,\theta^{(n)})}{\partial \sigma^{2} _{j
+}}=0\\
+\end{cases}.\]</span></p>
+<p>整理化简得：</p>
+<p><span class="math display">\[
+\begin{cases}
+\varepsilon_{j}^{(n+1)}=\sum^{n}_{i=1}\tilde{z}_{i,j}/n \\
+\mu_{j }^{(n+1)}=\frac{\sum^{n}_{i=1}\tilde{z}_{i,j}y_{i
+}}{\sum^{n}_{i=1}\tilde{z}_{i,j}}\\
+\sigma^{2(n+1)}_{j }=\frac{\sum^{n}_{i=1}\tilde{z}_{i,j}(y_{i }-\mu_{j
+}^{(n+1)})^{2}}{n\sum^{n}_{i=1}\tilde{z}_{i,j}}\\
+\end{cases}\]</span></p>
+<p>迭代运行以上的E步与M步，直至达到设定的迭代次数，便能得到参数<span class="math inline">\(\theta\)</span>的估计值<span class="math inline">\(\theta^{(M)}\)</span>。</p>
+<p>进一步地，继续计算<span class="math inline">\(\tilde{z}_{i,j}=E[z_{i,j}|y,\theta^{(M)}]\)</span>。由于<span class="math inline">\(E[z_{i,j}|y,\theta^{(M)}]=p(z_{i,j}=1|y,\theta^{(M)})\)</span>，即在已知数据y与参数<span class="math inline">\(\theta^{(M)}\)</span>下第i个数据属于第j类的概率。那么我们就可以取<span class="math inline">\(C_{i}=argmax\{
+\tilde{z}_{i,j}:j=1,2\}\)</span>作为对第i个数据的类别估计。</p>
+</div>
+</div>
+<div id="section-2" class="section level2">
+<h2>2. 使用 <em>norm_clusC</em>
+函数对二元混合正态数据进行分类(C语言)</h2>
+<p><font color="#03A3DA"> <em>norm_clusC</em> </font> 函数是由C写成，
+用于分类二元混合正态数据, 您可以在本章2a.中了解如何使用这个函数;
+函数具体代码实现可以在本章的2b.节中找到; 算法依据为EM算法,
+具体理论原理可以查阅上一章的1c.节.</p>
+<div id="section-2a" class="section level3">
+<h3>2a.使用示例</h3>
+<p>由于函数 <em>norm_clus</em> 与 <em>norm_clusC</em>
+在实现过程中采用了完全一样的算法过程, 区别仅仅在于实现语言的不同,
+所以本节的实验结果与1a.节类同.</p>
+<p>为了使用 <font color="#03A3DA"> <em>norm_clusC</em> </font>
+函数,您可以运行以下示例代码:</p>
+<p><font color="gray">#本段代码使用norm_clusC函数,应用在数据集<code>data_mix2</code>(size=100),并将其中数据分为两类,
+限制EM过程最大迭代次数为10.</font></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># library(SA23204182)</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">data</span>(data_mix2)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>cluC<span class="ot">&lt;-</span><span class="fu">norm_clusC</span>(<span class="at">data=</span>data_mix2 ,<span class="at">K=</span><span class="dv">10</span>)</span></code></pre></div>
+<pre><code>## EM iterations:2</code></pre>
+<p>以上自动输出的结果表明函数<font color="#03A3DA"> <em>norm_clusC</em>
+</font>成功运行,
+并且在运行过程中EM过程被迭代使用了2次。<font color="gray" size="1">#实际上可以通过使用<code>norm_clus(data_mix2,10,iters=FALSE)</code>来禁止输出迭代次数.</font></p>
+<p>这里展示一下<font color="#03A3DA"> <em>norm_clusC</em>
+</font>函数返回值的结构:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">str</span>(cluC)</span></code></pre></div>
+<pre><code>## List of 2
+##  $ label: num [1:100] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ param: num [1:5] 0.6 -0.0576 8.3222 0.9258 4.0097</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>cluC<span class="sc">$</span>label</span></code></pre></div>
+<pre><code>##   [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+##  [38] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+##  [75] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</code></pre>
+<p>函数<font color="#03A3DA"> <em>norm_clusC</em>
+</font>输出结果<code>cluC</code>是一个列表.</p>
+<p>其中<code>cluC$label</code>展示数据集<code>data_mix2</code>的分类结果,
+使用0或1区分类别;
+<code>cluC$param</code>展示这两类的混合比例以及拟合正态分布的参数.</p>
+<p>在这个例子中, 我们可以看到函数<font color="#03A3DA">
+<em>norm_clusC</em> </font>同样很完美地将这个数据集划分为真实分类!</p>
+</div>
+<div id="section-2b" class="section level3">
+<h3>2b.源代码</h3>
+<p>实现该算法的代码如下：</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>List <span class="fu">norm_clusC</span>(NumericVector data,int K) {</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  int N<span class="ot">=</span><span class="fu">data.size</span>();</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  double data_mean<span class="ot">=</span><span class="fu">mean</span>(data);</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  double data_sd<span class="ot">=</span><span class="fu">sd</span>(data);</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  NumericVector <span class="fu">label</span>(N);</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>  NumericVector <span class="fu">param</span>(<span class="dv">5</span>);</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>  param[<span class="dv">0</span>] <span class="ot">=</span> <span class="fl">0.5</span>;</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>  param[<span class="dv">1</span>] <span class="ot">=</span> data_mean;</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>  param[<span class="dv">2</span>] <span class="ot">=</span> data_mean <span class="sc">+</span> data_sd;</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>  param[<span class="dv">3</span>] <span class="ot">=</span> <span class="fu">pow</span>(data_sd, <span class="dv">2</span>);</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>  param[<span class="dv">4</span>] <span class="ot">=</span> <span class="fu">pow</span>(data_sd, <span class="dv">2</span>);</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>  NumericVector <span class="fu">z</span>(N);</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a>  <span class="cf">for</span> (int <span class="at">iter =</span> <span class="dv">0</span>; iter <span class="sc">&lt;</span> K; iter<span class="sc">++</span>) {</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>    double p1, p0;</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>    <span class="cf">for</span> (int <span class="at">i =</span> <span class="dv">0</span>; i <span class="sc">&lt;</span> N; i<span class="sc">++</span>) {</span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>      p1 <span class="ot">=</span> param[<span class="dv">0</span>]<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span> <span class="sc">*</span> <span class="fu">pow</span>((data[i] <span class="sc">-</span> param[<span class="dv">1</span>]), <span class="dv">2</span>)<span class="sc">/</span>param[<span class="dv">3</span>])<span class="sc">/</span> <span class="fu">sqrt</span>(param[<span class="dv">3</span>]);</span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a>      p0 <span class="ot">=</span> (<span class="dv">1</span><span class="sc">-</span>param[<span class="dv">0</span>])<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span> <span class="sc">*</span> <span class="fu">pow</span>((data[i] <span class="sc">-</span> param[<span class="dv">2</span>]), <span class="dv">2</span>)<span class="sc">/</span> param[<span class="dv">4</span>]) <span class="sc">/</span> <span class="fu">sqrt</span>(param[<span class="dv">4</span>]);</span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>      label[i]<span class="ot">=</span>p1<span class="sc">/</span>(p1<span class="sc">+</span>p0);</span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a>    }</span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a>    <span class="cf">for</span> (int <span class="at">i =</span> <span class="dv">0</span>; i <span class="sc">&lt;</span> N; i<span class="sc">++</span>){</span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a>      label[i]<span class="ot">=</span><span class="fu">round</span>(label[i]);</span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a>    }</span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a>    <span class="cf">if</span> (iter <span class="sc">&gt;</span><span class="dv">0</span> <span class="sc">&amp;&amp;</span> <span class="fu">is_true</span>(<span class="fu">all</span>(z<span class="sc">==</span>label))){</span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a>      Rcout <span class="sc">&lt;</span><span class="er">&lt;</span> <span class="st">&quot;EM iterations:&quot;</span> <span class="sc">&lt;</span><span class="er">&lt;</span> iter <span class="sc">&lt;</span><span class="er">&lt;</span> std<span class="sc">::</span>endl; </span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a>      <span class="cf">break</span>;</span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a>    }</span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a>    <span class="cf">for</span> (int <span class="at">i =</span> <span class="dv">0</span>; i <span class="sc">&lt;</span> N; i<span class="sc">++</span>){</span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a>      z[i]<span class="ot">=</span>label[i];</span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a>    }</span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a>    param[<span class="dv">0</span>]<span class="ot">=</span><span class="fu">mean</span>(label);</span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a>    double s1<span class="ot">=</span><span class="dv">0</span>,s2<span class="ot">=</span><span class="dv">0</span>,s3<span class="ot">=</span><span class="dv">0</span>,s4<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a>    </span>
+<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a>    <span class="cf">for</span> (int <span class="at">i =</span> <span class="dv">0</span>; i <span class="sc">&lt;</span> N; i<span class="sc">++</span>) {</span>
+<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a>      s1 <span class="sc">+</span><span class="er">=</span> label[i] <span class="sc">*</span> data[i]<span class="sc">/</span>N<span class="sc">/</span>param[<span class="dv">0</span>];</span>
+<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a>      s2 <span class="sc">+</span><span class="er">=</span> (<span class="dv">1</span><span class="sc">-</span>label[i]) <span class="sc">*</span> data[i]<span class="sc">/</span>N<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>param[<span class="dv">0</span>]);</span>
+<span id="cb14-36"><a href="#cb14-36" tabindex="-1"></a>      s3 <span class="sc">+</span><span class="er">=</span> label[i] <span class="sc">*</span> <span class="fu">pow</span>(data[i],<span class="dv">2</span>);</span>
+<span id="cb14-37"><a href="#cb14-37" tabindex="-1"></a>      s4 <span class="sc">+</span><span class="er">=</span> (<span class="dv">1</span><span class="sc">-</span>label[i]) <span class="sc">*</span> <span class="fu">pow</span>(data[i],<span class="dv">2</span>);</span>
+<span id="cb14-38"><a href="#cb14-38" tabindex="-1"></a>    }</span>
+<span id="cb14-39"><a href="#cb14-39" tabindex="-1"></a>    param[<span class="dv">1</span>] <span class="ot">=</span> s1;</span>
+<span id="cb14-40"><a href="#cb14-40" tabindex="-1"></a>    param[<span class="dv">2</span>] <span class="ot">=</span> s2;</span>
+<span id="cb14-41"><a href="#cb14-41" tabindex="-1"></a>    param[<span class="dv">3</span>] <span class="ot">=</span> s3<span class="sc">/</span>N<span class="sc">/</span>(param[<span class="dv">0</span>])<span class="sc">-</span> <span class="fu">pow</span>(s1,<span class="dv">2</span>);</span>
+<span id="cb14-42"><a href="#cb14-42" tabindex="-1"></a>    param[<span class="dv">4</span>] <span class="ot">=</span> s4<span class="sc">/</span>N<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>param[<span class="dv">0</span>])<span class="sc">-</span> <span class="fu">pow</span>(s2,<span class="dv">2</span>);</span>
+<span id="cb14-43"><a href="#cb14-43" tabindex="-1"></a>  }</span>
+<span id="cb14-44"><a href="#cb14-44" tabindex="-1"></a>  List result <span class="ot">=</span> List<span class="sc">::</span><span class="fu">create</span>(</span>
+<span id="cb14-45"><a href="#cb14-45" tabindex="-1"></a>    <span class="fu">Named</span>(<span class="st">&quot;label&quot;</span>) <span class="ot">=</span> label,</span>
+<span id="cb14-46"><a href="#cb14-46" tabindex="-1"></a>    <span class="fu">Named</span>(<span class="st">&quot;param&quot;</span>) <span class="ot">=</span> param);</span>
+<span id="cb14-47"><a href="#cb14-47" tabindex="-1"></a>  return result;</span>
+<span id="cb14-48"><a href="#cb14-48" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+</div>
+<div id="section-3" class="section level2">
+<h2>3.使用microbenchmark比较函数 <em>norm_clus</em> 与函数
+<em>norm_clusC</em></h2>
+<div id="section-3a" class="section level3">
+<h3>3a.示例</h3>
+<p>可以运行以下示例代码来比较函数 <font color="#03A3DA">
+<em>norm_clus</em> </font> 与函数 <font color="#03A3DA">
+<em>norm_clusC</em></font> 的运行时间.</p>
+<p>在这里,函参我们传入了<code>iters=FALSE</code>,
+这一项是为了为了避免函数 _norm_clus 与函数
+_norm_clusC_在运行过程中自动输出”EM iterations:” “2”等字样,
+简化代码输出. <font color="gray">#否则在使用microbenchmark时,“EM
+iterations:” “2”会被反复输出</font></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># library(SA23204182)</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">data</span>(data_mix2)</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>tm1 <span class="ot">&lt;-</span> microbenchmark<span class="sc">::</span><span class="fu">microbenchmark</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="at">rnR =</span> <span class="fu">norm_clus</span>(data_mix2,<span class="dv">10</span>,<span class="at">iters=</span><span class="cn">FALSE</span>),</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="at">rnC =</span> <span class="fu">norm_clusC</span>(data_mix2,<span class="dv">10</span>,<span class="at">iters=</span><span class="cn">FALSE</span>))</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">summary</span>(tm1)[,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">6</span>)])</span></code></pre></div>
+<pre><code>##   expr    lq median      uq
+## 1  rnR 835.8 868.75 1361.45
+## 2  rnC  93.2  96.65  127.70</code></pre>
+<p>可以看出使用C实现的函数<font color="#03A3DA">
+<em>norm_clusC</em></font>比使用R实现的函数<font color="#03A3DA">
+<em>norm_clus</em></font>快非常多。</p>
+</div>
+</div>
+<div id="section-4" class="section level2">
+<h2>4.使用 <em>spectralClustering</em> 函数进行社区发现(节点聚类)]</h2>
+<div id="section-4a" class="section level3">
+<h3>4a.使用示例</h3>
+<p>函数 <font color="#03A3DA"> <em>spectralClustering</em></font>
+需要输入一个无向网络的邻接矩阵以及聚类个数作为参数,
+将输出对网络节点的聚类结果.</p>
+<p>您可以通过以下代码简单地生成一个节点个数为100的邻接矩阵:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>adjacency_Matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rbinom</span>(n<span class="sc">^</span><span class="dv">2</span>, <span class="dv">1</span>, <span class="fl">0.1</span>), n, n)</span></code></pre></div>
+<p>或者是直接使用本包提供的数据集<code>adjacency_matrix</code>,
+该数据集同样提供了一个节点个数为100的邻接矩阵.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">data</span>(adjacency_matrix)</span></code></pre></div>
+<p>下面的示例代码将这个邻接矩阵对应的节点分为了两类:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>numClusters <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">spectralClustering</span>(adjacencyMatrix, numClusters)</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Community Assignments:&quot;</span>, result, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Community Assignments: 1 1 1 1 2 2 1 2 1 1 2 2 1 1 1 2 1 2 1 2 2 1 1 2 2 2 1 1 1 2 1 1 2 1 2 1 2 1 2 1 2 2 1 2 1 1 2 1 1 1 2 2 1 1 1 1 2 1 2 1 1 2 2 1 2 1 1 2 1 1 1 1 2 1 1 2 2 2 1 1 2 2 2 2 1 1 1 2 1 2 1 2 1 2 2 2 1 1 1 1</code></pre>
+<p>这个结果展示了社区划分, 在函数<font color="#03A3DA">
+<em>spectralClustering</em></font>的输出中,
+不同的整数代表相应的节点被分为不同社区.</p>
+<p>我们可以将这个函数应用到社区发现这个研究方向上非常经典的一个数据集<code>Zachary</code>,
+这个网络的图如下:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">library</span>(igraph)</span></code></pre></div>
+<pre><code>## Warning: package &#39;igraph&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## 
+## Attaching package: &#39;igraph&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     decompose, spectrum</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     union</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">make_graph</span>(<span class="st">&#39;Zachary&#39;</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout =</span> layout_with_kk)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>这个网络由34个节点构成,
+由这个可视化的网络我们可以看到不同节点之间的边稀疏程度不同,
+函数<font color="#03A3DA">
+<em>spectralClustering</em></font>就可以将这些节点大致分为两类,
+同类别的节点连接比较稠密, 不同类别的节点连接比较稀疏. 示例如下:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>adjacencyMatrixg <span class="ot">&lt;-</span> <span class="fu">get.adjacency</span>(g)</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>numClusters <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">spectralClustering</span>(adjacencyMatrixg, numClusters)</span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Community Assignments:&quot;</span>, result, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Community Assignments: 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 1 2 2 2 2 1 1</code></pre>
+</div>
+<div id="section-4b" class="section level3">
+<h3>4b.源代码</h3>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>spectralClustering <span class="ot">&lt;-</span> <span class="cf">function</span>(adjacencyMatrix, numClusters) {</span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>  graph <span class="ot">&lt;-</span> <span class="fu">graph_from_adjacency_matrix</span>(adjacencyMatrix, <span class="at">mode =</span> <span class="st">&quot;undirected&quot;</span>, <span class="at">weighted =</span> <span class="cn">NULL</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>  </span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>  <span class="co"># Get the Laplacian matrix</span></span>
+<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a>  laplacianMatrix <span class="ot">&lt;-</span> <span class="fu">graph.laplacian</span>(graph, <span class="at">normalized =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a>  </span>
+<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a>  <span class="co"># Compute the eigenvalues and eigenvectors of the Laplacian matrix</span></span>
+<span id="cb29-8"><a href="#cb29-8" tabindex="-1"></a>  laplacianEigen <span class="ot">&lt;-</span> <span class="fu">eigen</span>(laplacianMatrix)</span>
+<span id="cb29-9"><a href="#cb29-9" tabindex="-1"></a>  </span>
+<span id="cb29-10"><a href="#cb29-10" tabindex="-1"></a>  <span class="co"># Select the first numClusters eigenvectors</span></span>
+<span id="cb29-11"><a href="#cb29-11" tabindex="-1"></a>  selectedEigenVectors <span class="ot">&lt;-</span> laplacianEigen<span class="sc">$</span>vectors[, <span class="dv">1</span><span class="sc">:</span>numClusters]</span>
+<span id="cb29-12"><a href="#cb29-12" tabindex="-1"></a>  </span>
+<span id="cb29-13"><a href="#cb29-13" tabindex="-1"></a>  <span class="co"># Perform spectral clustering</span></span>
+<span id="cb29-14"><a href="#cb29-14" tabindex="-1"></a>  spectralClusters <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(selectedEigenVectors, <span class="at">centers =</span> numClusters)<span class="sc">$</span>cluster</span>
+<span id="cb29-15"><a href="#cb29-15" tabindex="-1"></a>  </span>
+<span id="cb29-16"><a href="#cb29-16" tabindex="-1"></a>  <span class="fu">return</span>(spectralClusters)</span>
+<span id="cb29-17"><a href="#cb29-17" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="section-4c" class="section level3">
+<h3>4c.算法原理</h3>
+<p>谱聚类（Spectral
+Clustering）是一种基于图论和线性代数的聚类方法，其主要思想是将数据转换到一个低维的表示空间，然后在该空间中应用标准的聚类算法（例如
+K-means）。以下是谱聚类算法的主要步骤：</p>
+<ol style="list-style-type: decimal">
+<li><strong>构建相似度图（Affinity Graph）：</strong>
+<ul>
+<li>给定数据集，首先构建一个相似度图。这个图可以是完全连接的（每个点与所有其他点相连），也可以基于某种相似性度量进行连接。常用的相似性度量包括高斯核（Gaussian
+Kernel）和K近邻（K-Nearest Neighbors）。</li>
+</ul></li>
+<li><strong>构建拉普拉斯矩阵（Laplacian Matrix）：</strong>
+<ul>
+<li><p>从相似度图中构建拉普拉斯矩阵。拉普拉斯矩阵有两种形式：未标准化拉普拉斯矩阵和标准化拉普拉斯矩阵。在谱聚类中，通常使用标准化的拉普拉斯矩阵。</p></li>
+<li><p>未标准化拉普拉斯矩阵定义为 <span class="math inline">\(L = D -
+W\)</span>，其中 <span class="math inline">\(D\)</span> 是度矩阵， <span class="math inline">\(W\)</span> 是相似度矩阵。</p></li>
+<li><p>标准化拉普拉斯矩阵定义为 <span class="math inline">\(L_{sym} = I
+- D^{-0.5}WD^{-0.5}\)</span>，其中 <span class="math inline">\(D^{-0.5}\)</span> 是度矩阵的负平方根。</p></li>
+</ul></li>
+<li><strong>计算特征值和特征向量：</strong>
+<ul>
+<li>对拉普拉斯矩阵进行特征值分解，得到特征值和对应的特征向量。</li>
+</ul></li>
+<li><strong>选择特征向量：</strong>
+<ul>
+<li>选择前 <span class="math inline">\(k\)</span>
+个特征向量对应的特征值，其中 <span class="math inline">\(k\)</span>
+是聚类的数量。这些特征向量构成了新的表示空间。</li>
+</ul></li>
+<li><strong>聚类：</strong>
+<ul>
+<li>将选定的特征向量作为新的数据点，应用标准的聚类算法，例如
+K-means，来对这些点进行聚类。</li>
+</ul></li>
+</ol>
+<p>谱聚类的优点包括对非凸形状的簇效果好、对噪声和异常值的鲁棒性较强。然而，谱聚类的计算成本较高，尤其是在大规模数据集上。算法的性能也受到相似度图的选择和参数的影响。</p>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
